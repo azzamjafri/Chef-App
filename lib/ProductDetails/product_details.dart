@@ -249,22 +249,47 @@ class _ProductDetailsState extends State<ProductDetails> {
   }
 
   expandedWidget() {
+
     int i = count + 1;
 
     return new Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: List.generate((steps - 1) * 4, (index) {
-        if (index % 4 == 1)
+      children: List.generate((steps - 1) * 4 + 2, (index) {
+
+        if(index == (steps - 1) * 4 ) return redText('Presentation', 19.0);
+          else if(index == (steps - 1) * 4 + 1) {
+            
+            return Padding(
+            padding: const EdgeInsets.only(bottom: 18.5),
+            child: Table(
+              defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+              children: [
+                for (int j = 0; j < data['presentation'].length; j++)
+                  TableRow(children: [
+                    Padding(
+                      padding: EdgeInsets.only(top: 2.0),
+                      child: blackText('- ' + data['presentation'][j]),
+                    ),
+                  ]),
+              ],
+            ),
+          );
+          }
+
+        if (index % 4 == 0){
+          
           return Row(
             children: <Widget>[
-              redText(data['preparationstep' + i.toString() + '_title']),
+              
+              Padding(padding: EdgeInsets.only(top: 2.0), child: redText(data['preparationstep' + i.toString() + '_title']),),
             ],
           );
-        else if (index % 4 == 2) {
-          return Table(
+        }
+        else if (index % 4 == 1) {
+              return Padding(padding: EdgeInsets.only(top: 4.0), child: Table(
             defaultVerticalAlignment: TableCellVerticalAlignment.middle,
             children: [
-              for (int j = 0;j <data['preparationstep' +i.toString() + '_ingredient_names'].length;j++) TableRow(children: [
+              for (int j = 0;j <data['preparationstep' +i.toString() + '_ingredient_names'].length; j++) TableRow(children: [
                   Padding(
                     padding: EdgeInsets.only(top: 1.5),
                     child: blackText(data['preparationstep' +
@@ -279,53 +304,38 @@ class _ProductDetailsState extends State<ProductDetails> {
                   ),
                 ]),
             ],
-          );
-        } else if (index % 4 == 3) {
+          ),);
+          
+        } else if (index % 4 == 2) {
           return Row(
             children: <Widget>[
-              redText('Method'),
-            ],
+                  Padding(padding: EdgeInsets.only(top: 18.5, bottom: 4.0), child: redText('Method'),),
+              ],
           );
         } else {
-          return Table(
-            defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-            children: [
-              for (int j = 0;j < data['preparationstep' + i.toString() + '_methods'].length; j++)
-                TableRow(children: [
-                  Padding(
-                    padding: EdgeInsets.only(top: 1.5),
-                    child: blackText('- ' +
-                        data['preparationstep' + i.toString() + '_methods'][j]),
-                  ),
-                ]),
-            ],
+
+          int l = data['preparationstep' + i.toString() + '_methods'].length;
+          i = i + 1;
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 18.5),
+            child: Table(
+              defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+              children: [
+                for (int j = 0;j < l; j++)
+                  TableRow(children: [
+                    Padding(
+                      padding: EdgeInsets.only(top: 1.5),
+                      child: blackText('- ' + data['preparationstep' + (i-1).toString() + '_methods'][j]),
+                    ),
+                  ]),
+              ],
+            ),
           );
         }
       }),
     );
 
-    // return new Column(
-    //   crossAxisAlignment: CrossAxisAlignment.start,
-    //   children: [
-
-    //     Padding(padding: EdgeInsets.only(top: 18.5)),
-
-    //     Padding(padding: EdgeInsets.only(top: 2.0)),
-
-    //     Padding(padding: EdgeInsets.only(top: 18.5)),
-
-    //     Padding(padding: EdgeInsets.only(top: 2.0)),
-
-    //     SizedBox(
-    //       height: 20.0,
-    //     ),
-    //     redText('Presentation'),
-    //     for(int i=0; i<data['presentation'].length; i++) blackText(data['presentation'][i]),
-    //     SizedBox(
-    //       height: 20.0,
-    //     ),
-    //   ],
-    // );
+   
   }
 
   title() {
