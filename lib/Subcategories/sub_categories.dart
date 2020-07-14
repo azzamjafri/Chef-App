@@ -3,10 +3,14 @@ import "package:flutter/material.dart";
 import 'package:recipe_app/ProductDetails/product_details.dart';
 import 'package:recipe_app/colors.dart';
 
+// String category;
+String docId;
+
 class SubCategory extends StatefulWidget {
   String reference;
   SubCategory(String document) {
     reference = document;
+
   }
 
   @override
@@ -14,7 +18,7 @@ class SubCategory extends StatefulWidget {
 }
 
 class _SubCategoryState extends State<SubCategory> {
-  String docId;
+  
   _SubCategoryState(String docx) {
     docId = docx;
     // print(docId + ' **********************************');

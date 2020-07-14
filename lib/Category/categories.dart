@@ -14,7 +14,7 @@ import '../colors.dart';
 // filteredNames, searchText, name
 
 String currentDocId;
-
+var user;
 class Category extends StatefulWidget {
   @override
   _CategoryState createState() => _CategoryState();
@@ -27,12 +27,12 @@ class _CategoryState extends State<Category> {
   final AuthService _auth = new AuthService();
 
   var favouriteName;
-  var user;
+  
   @override
   void initState() {
     
     favouriteName = new List<String>();
-    print(Firestore.instance.collection('categories').snapshots());
+    // print(Firestore.instance.collection('categories').snapshots());
     getDocId();
     
     super.initState();
@@ -40,7 +40,7 @@ class _CategoryState extends State<Category> {
 
   getDocId() async {
     user =  await FirebaseAuth.instance.currentUser();
-    // print('User - ' + user.uid);
+    print('User - ' + user.uid);
   }
 
   @override
@@ -84,14 +84,7 @@ class _CategoryState extends State<Category> {
   }
 
   Widget _buildList() {
-    // if (_searchText.isNotEmpty) {
-    //   List tempList = new List();
-    //   for (var i in filtered_names) {
-    //     if (i['name'].toLowerCase().contains(_searchText.toLowerCase()))
-    //       tempList.add(i);
-    //   }
-    //   filtered_names = tempList;
-    // }
+   
 
     // DO NOT TOUCH  request.time < timestamp.date(2020, 7, 8);
 
@@ -162,13 +155,8 @@ class _CategoryState extends State<Category> {
                                       Firestore.instance.collection('users').document(user.uid).updateData({
                                         'favourites': FieldValue.arrayUnion([document['name']]),
                                       });
-                                      print('adding category....');
-                                      setState(() {
-                                        // favouriteName.contains(document['name']) ?
-                                        // favouriteName.remove(document['name'])
-                                        // :
-                                        // favouriteName.add(document['name']);  
-                                      });
+                                      // print('adding category....');
+                                      setState(() {});
                                       
                                     },
                                     child: Image.asset(
@@ -224,6 +212,7 @@ class _CategoryState extends State<Category> {
                 _searchText = "";
               });
             } else {
+              
               setState(() {
                 _searchText = capitalize(_filter.text);
               });

@@ -2,6 +2,8 @@ import 'package:carousel_pro/carousel_pro.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
+import 'package:recipe_app/Category/categories.dart';
+import 'package:recipe_app/Subcategories/sub_categories.dart';
 import 'package:recipe_app/colors.dart';
 
 class ProductDetails extends StatefulWidget {
@@ -15,6 +17,7 @@ class ProductDetails extends StatefulWidget {
 }
 
 class _ProductDetailsState extends State<ProductDetails> {
+  bool isFavourite = false;
   DocumentSnapshot data;
   int steps;
   int count = 1;
@@ -29,7 +32,9 @@ class _ProductDetailsState extends State<ProductDetails> {
   void initState() {
     steps = data['preparation_steps_count'];
     image_count = data['images'].length;
-    // print(image_count.toString() + "*************");
+    Firestore.instance.collection('users').document(user.uid).get().then((value) {
+      if(value.data['favourites'].contains(docId) == 0) isFavourite = true;
+    });
     super.initState();
   }
 
@@ -249,17 +254,15 @@ class _ProductDetailsState extends State<ProductDetails> {
   }
 
   expandedWidget() {
-
     int i = count + 1;
 
     return new Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: List.generate((steps - 1) * 4 + 2, (index) {
-
-        if(index == (steps - 1) * 4 ) return redText('Presentation', 19.0);
-          else if(index == (steps - 1) * 4 + 1) {
-            
-            return Padding(
+        if (index == (steps - 1) * 4)
+          return redText('Presentation', 19.0);
+        else if (index == (steps - 1) * 4 + 1) {
+          return Padding(
             padding: const EdgeInsets.only(bottom: 18.5),
             child: Table(
               defaultVerticalAlignment: TableCellVerticalAlignment.middle,
@@ -274,46 +277,58 @@ class _ProductDetailsState extends State<ProductDetails> {
               ],
             ),
           );
-          }
+        }
 
-        if (index % 4 == 0){
-          
+        if (index % 4 == 0) {
           return Row(
             children: <Widget>[
-              
-              Padding(padding: EdgeInsets.only(top: 2.0), child: redText(data['preparationstep' + i.toString() + '_title']),),
+              Padding(
+                padding: EdgeInsets.only(top: 2.0),
+                child:
+                    redText(data['preparationstep' + i.toString() + '_title']),
+              ),
             ],
           );
-        }
-        else if (index % 4 == 1) {
-              return Padding(padding: EdgeInsets.only(top: 4.0), child: Table(
-            defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-            children: [
-              for (int j = 0;j <data['preparationstep' +i.toString() + '_ingredient_names'].length; j++) TableRow(children: [
-                  Padding(
-                    padding: EdgeInsets.only(top: 1.5),
-                    child: blackText(data['preparationstep' +
-                        i.toString() +
-                        '_ingredient_names'][j]),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(top: 1.5),
-                    child: blackText(data['preparationstep' +
-                        i.toString() +
-                        '_ingredients_qty'][j]),
-                  ),
-                ]),
-            ],
-          ),);
-          
+        } else if (index % 4 == 1) {
+          return Padding(
+            padding: EdgeInsets.only(top: 4.0),
+            child: Table(
+              defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+              children: [
+                for (int j = 0;
+                    j <
+                        data['preparationstep' +
+                                i.toString() +
+                                '_ingredient_names']
+                            .length;
+                    j++)
+                  TableRow(children: [
+                    Padding(
+                      padding: EdgeInsets.only(top: 1.5),
+                      child: blackText(data['preparationstep' +
+                          i.toString() +
+                          '_ingredient_names'][j]),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(top: 1.5),
+                      child: blackText(data['preparationstep' +
+                          i.toString() +
+                          '_ingredients_qty'][j]),
+                    ),
+                  ]),
+              ],
+            ),
+          );
         } else if (index % 4 == 2) {
           return Row(
             children: <Widget>[
-                  Padding(padding: EdgeInsets.only(top: 18.5, bottom: 4.0), child: redText('Method'),),
-              ],
+              Padding(
+                padding: EdgeInsets.only(top: 18.5, bottom: 4.0),
+                child: redText('Method'),
+              ),
+            ],
           );
         } else {
-
           int l = data['preparationstep' + i.toString() + '_methods'].length;
           i = i + 1;
           return Padding(
@@ -321,11 +336,14 @@ class _ProductDetailsState extends State<ProductDetails> {
             child: Table(
               defaultVerticalAlignment: TableCellVerticalAlignment.middle,
               children: [
-                for (int j = 0;j < l; j++)
+                for (int j = 0; j < l; j++)
                   TableRow(children: [
                     Padding(
                       padding: EdgeInsets.only(top: 1.5),
-                      child: blackText('- ' + data['preparationstep' + (i-1).toString() + '_methods'][j]),
+                      child: blackText('- ' +
+                          data['preparationstep' +
+                              (i - 1).toString() +
+                              '_methods'][j]),
                     ),
                   ]),
               ],
@@ -334,8 +352,6 @@ class _ProductDetailsState extends State<ProductDetails> {
         }
       }),
     );
-
-   
   }
 
   title() {
@@ -345,18 +361,26 @@ class _ProductDetailsState extends State<ProductDetails> {
         GestureDetector(
           onTap: () => Navigator.pop(context),
           child: Image.asset(
-            'assets/backk.png',
+            'assets/backk.png', color: Colors.black,
           ),
         ),
+        Padding(padding: EdgeInsets.only(left: MediaQuery.of(context).size.width / 1.8)),
         GestureDetector(
           onTap: () {
-            // Firestore.instance.collection('users').document(user.uid).updateData({'favourites': FieldValue.arrayUnion([document['name']]),});
+            Firestore.instance
+                .collection('users')
+                .document(user.uid)
+                .updateData({
+              'favourites': FieldValue.arrayUnion([data['name']]),
+            });
+            // print('adding category....');
+            setState(() {});
           },
-          child: Padding(
-              padding: EdgeInsets.only(
-                  left: MediaQuery.of(context).size.width / 1.8)),
+          child: Image.asset(
+            isFavourite ? 'assets/redHeart.png' : 'assets/heart.png',
+            color: redColor,
+          ),
         ),
-        Image.asset('assets/heart.png'),
       ],
     );
   }
