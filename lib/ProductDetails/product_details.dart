@@ -22,10 +22,10 @@ class _ProductDetailsState extends State<ProductDetails> {
   int steps;
   int count = 1;
   int image_count;
+
+  final key = GlobalKey<ScaffoldState>();
   _ProductDetailsState(var d) {
     this.data = d;
-
-    // print(data['name'].toString() + "*************");
   }
 
   @override
@@ -44,6 +44,7 @@ class _ProductDetailsState extends State<ProductDetails> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
+      key: key,
       body: Container(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
@@ -76,7 +77,7 @@ class _ProductDetailsState extends State<ProductDetails> {
           ),
         ),
         child: Container(
-          width: MediaQuery.of(context).size.width,
+          width: MediaQuery.of(context).size.width - 8,
           height: MediaQuery.of(context).size.height / 1.5,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.only(
@@ -136,7 +137,7 @@ class _ProductDetailsState extends State<ProductDetails> {
           Row(
             children: <Widget>[
 
-              // redText('Garlic Confit'),
+              
               redText(data['preparationstep' + count.toString() + '_title']),
             ],
           ),
@@ -358,21 +359,59 @@ class _ProductDetailsState extends State<ProductDetails> {
         ),
         Padding(padding: EdgeInsets.only(left: MediaQuery.of(context).size.width / 1.8)),
         // new Spacer(),
-        IconButton(icon: Icon(Icons.add_shopping_cart), onPressed: (){
-          Firestore.instance.collection('users').document(user.uid).collection('cart').document().setData({
+        IconButton(icon: Icon(Icons.add_shopping_cart), onPressed: () async {
+
+          await Firestore.instance.collection('users').document(user.uid).collection('cart').where('name', isEqualTo: data['name']).getDocuments().then((value) {
+            
+            if(value.documents.toList().isEmpty){
+
+            Firestore.instance.collection('users').document(user.uid).collection('cart').document().setData({
             'name': data['name'],
             'image': data['images'][0],
+            'category': docId,
           });
+
+          key.currentState.showSnackBar(SnackBar(content: Container(height: 25.0, child: Center(child: Text('Added to Cart'))), elevation: 10.0,
+            backgroundColor: Theme.of(context).primaryColor,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(20.0)),
+            ),
+            duration: Duration(seconds: 1),
+            
+            ));
+
+
+          }else{
+
+            key.currentState.showSnackBar(SnackBar(content: Container(
+              height: 25.0,
+              child: Center(child: Text('Product Already in the Cart'))), elevation: 10.0,
+              backgroundColor: Theme.of(context).primaryColor,
+              behavior: SnackBarBehavior.floating,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(20.0)),
+              ),
+              duration: Duration(milliseconds: 920),
+            ));
+
+          }
+
+          });
+          
+          
+          
         }),
         GestureDetector(
           onTap: () {
+
             Firestore.instance
                 .collection('users')
                 .document(user.uid)
                 .updateData({
               'favourites': FieldValue.arrayUnion([data['name']]),
             });
-            // print('adding category....');
+            
             setState(() {});
           },
           child: Image.asset(

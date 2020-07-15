@@ -3,7 +3,7 @@ import "package:flutter/material.dart";
 import 'package:recipe_app/ProductDetails/product_details.dart';
 import 'package:recipe_app/colors.dart';
 
-// String category;
+// Category;
 String docId;
 
 class SubCategory extends StatefulWidget {

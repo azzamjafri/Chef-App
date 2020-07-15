@@ -1,9 +1,10 @@
 import 'dart:collection';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:recipe_app/Category/categories.dart';
+import 'package:recipe_app/Category/favourites_list.dart';
+import 'package:recipe_app/ProductDetails/product_details.dart';
 
 
 import 'package:recipe_app/Service/authentication.dart';
@@ -22,7 +23,7 @@ class Cart extends StatefulWidget {
 
 class _CartState extends State<Cart> {
   
-  List<String> favouriteName;
+  var favouriteName;
 
   
 
@@ -32,13 +33,12 @@ class _CartState extends State<Cart> {
 
   final AuthService _auth = new AuthService();
 
-  var Cart;
-  // bool isEmpty = true;
+  
+  
   @override
   void initState() {
-    // if(favouriteName.isEmpty) isEmpty = true;
-  //  print(isEmpty.toString() + ' ))))))))))))))))))))))))');
-    
+   
+    favouriteName = new List<String>();
     super.initState();
   }
 
@@ -81,13 +81,13 @@ class _CartState extends State<Cart> {
 
   Widget _buildList() {
     
-    // if(favouriteName.isEmpty) return Center(child: Text('No  Items  In  Cart  Yet', style: TextStyle(fontSize: 18.0, fontStyle: FontStyle.italic, fontWeight: FontWeight.bold, letterSpacing: 2.0)));
+    
     
     
     
      
     var streamData = Firestore.instance.collection('users').document(user.uid).collection('cart').snapshots();
-    // var streamData = Firestore.instance.collection('categories').where('name', whereIn: favourites).snapshots();
+    
     return StreamBuilder<QuerySnapshot>(
       stream: streamData,
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -101,7 +101,7 @@ class _CartState extends State<Cart> {
             );
           default:
             final int count = snapshot.data.documents.length;
-            // if(count == 0) print('000000000000000');
+            if(count == 0) return Center(child: Text('No Items In Cart', style: TextStyle(fontSize: 22.0, fontStyle: FontStyle.italic)));
             return GridView.builder(
               physics: NeverScrollableScrollPhysics(),
               shrinkWrap: true,
@@ -117,45 +117,28 @@ class _CartState extends State<Cart> {
                   padding: const EdgeInsets.fromLTRB(8.0, 10.0, 8.0, 0.0),
                   child: GestureDetector(
                     
-                    onTap: () => Navigator.push(
-                        context,
-                        new MaterialPageRoute(
-                            builder: (context) =>
-                                SubCategory(document.documentID))),
+                    onTap: () {
+                      Firestore.instance.collection('categories').document(docId).collection('dishes').document(document['name']).get().then((value) {
+
+                        Navigator.push(context, new MaterialPageRoute(builder: (context) => ProductDetails(value)));
+                      });
+                      
+                    } ,
                     child: new Card(
                       elevation: 10.0,
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(35.0)),
                       child: Column(
                         children: <Widget>[
-                          Stack(
-                            children: <Widget>[
-                              ClipRRect(
-                                
-                                child: Container(
-                                  height: 110.0,
-                                  width: MediaQuery.of(context).size.width / 2.2,
-                                  child: Image.network(document['image'], fit: BoxFit.fill, scale: 5.0)),
-                                borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(35.0),
-                                    topRight: Radius.circular(35.0)),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Align(
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      },
-                                    child: Image.asset(
-                                      'assets/redHeart.png',
-                                      color: redColor
-                                          
-                                    ),
-                                  ),
-                                  alignment: Alignment.topRight,
-                                ),
-                              )
-                            ],
+                          ClipRRect(
+                            
+                            child: Container(
+                              height: 110.0,
+                              width: MediaQuery.of(context).size.width / 2.2,
+                              child: Image.network(document['image'], fit: BoxFit.fill, scale: 5.0)),
+                            borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(35.0),
+                                topRight: Radius.circular(35.0)),
                           ),
                           Padding(
                             padding: EdgeInsets.only(top: 12.0),
@@ -271,10 +254,8 @@ class _CartState extends State<Cart> {
         GestureDetector(
           onTap: () {
             
-            favouriteName.forEach((element) => print(element + " :)"));
-            setState(() {
-              favouriteName = List.of(HashSet.from(favouriteName));  
-            });
+            getFavouriteList();
+            
           },
           child: Container(
               child: Image.asset(
@@ -289,4 +270,15 @@ class _CartState extends State<Cart> {
   }
 
   String capitalize(String s) => s[0].toUpperCase() + s.substring(1);
+
+  getFavouriteList() async {
+    
+    Firestore.instance.collection('users').document(user.uid).get().then((value) {
+      favouriteName = value.data['favourites'];
+      
+    }).then((value) {
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => new Favourites(List.of(HashSet.from(favouriteName)))));
+    });
+    
+  }
 }

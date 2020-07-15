@@ -33,7 +33,7 @@ class _CategoryState extends State<Category> {
   void initState() {
     
     favouriteName = new List<String>();
-    // print(Firestore.instance.collection('categories').snapshots());
+    
     getDocId();
     
     super.initState();
@@ -41,7 +41,11 @@ class _CategoryState extends State<Category> {
 
   getDocId() async {
     user =  await FirebaseAuth.instance.currentUser();
-    print('User - ' + user.uid);
+    setState(() {
+      Firestore.instance.collection('users').document(user.uid).get().then((value) {
+      favouriteName = value.data['favourites'];
+    });
+    });
   }
 
   @override
@@ -153,12 +157,12 @@ class _CategoryState extends State<Category> {
                                   child: GestureDetector(
                                     onTap: () {
 
-                                      Firestore.instance.collection('users').document(user.uid).updateData({
+                                      setState(() {
+                                        Firestore.instance.collection('users').document(user.uid).updateData({
                                         'favourites': FieldValue.arrayUnion([document['name']]),
                                       });
-                                      // print('adding category....');
-                                      setState(() {});
-                                      
+                                      favouriteName.add(document['name']);
+                                      });
                                     },
                                     child: Image.asset(
                                       favouriteName.contains(document['name']) ?
@@ -307,9 +311,9 @@ class _CategoryState extends State<Category> {
         }),
         GestureDetector(
           onTap: () async {
-
             getFavouriteList();
           },
+          
           child: Container(
               child: Image.asset(
             'assets/heart.png',
@@ -324,13 +328,13 @@ class _CategoryState extends State<Category> {
   String capitalize(String s) => s[0].toUpperCase() + s.substring(1);
 
     getFavouriteList() async {
-    var user = await FirebaseAuth.instance.currentUser();
+    
     Firestore.instance.collection('users').document(user.uid).get().then((value) {
       favouriteName = value.data['favourites'];
-      favouriteName.forEach((el) => print(el));
+      
     }).then((value) {
       Navigator.push(context, MaterialPageRoute(builder: (context) => new Favourites(List.of(HashSet.from(favouriteName)))));
     });
-    // favouriteName =  doc['favourites'];
+    
   }
 }

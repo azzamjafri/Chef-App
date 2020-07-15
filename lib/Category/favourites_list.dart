@@ -4,11 +4,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import 'package:recipe_app/HomePage/login.dart';
+
 import 'package:recipe_app/Service/authentication.dart';
 import 'package:recipe_app/Subcategories/sub_categories.dart';
 
 import '../colors.dart';
+import 'cart.dart';
 
 // filteredNames, searchText, name
 
@@ -97,7 +98,7 @@ class _FavouritesState extends State<Favourites> {
     
      
     var streamData = Firestore.instance.collection('categories').where('name', whereIn: favouriteName).snapshots();
-    // var streamData = Firestore.instance.collection('categories').where('name', whereIn: favourites).snapshots();
+    
     return StreamBuilder<QuerySnapshot>(
       stream: streamData,
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -160,7 +161,7 @@ class _FavouritesState extends State<Favourites> {
                                         Firestore.instance.collection('users').document(user.uid).updateData({
                                         'favourites': FieldValue.arrayRemove([document['name']]),
                                       });
-                                      List<String> temp;
+                                      
                                       
                                       favouriteName.remove(document['name']);
                                       });
@@ -182,7 +183,7 @@ class _FavouritesState extends State<Favourites> {
                           ),
                           Center(
                             child: Text(
-                              // filtered_names[index]['name'],
+                              
                               document['name'],
                               textAlign: TextAlign.center,
                             ),
@@ -216,7 +217,7 @@ class _FavouritesState extends State<Favourites> {
             if (_filter.text.isEmpty) {
               setState(() {
                 _searchText = "";
-                // filtered_names = names;
+                
               });
             } else {
               setState(() {
@@ -235,7 +236,7 @@ class _FavouritesState extends State<Favourites> {
       child: Align(
         alignment: Alignment.centerLeft,
         child: new Container(
-//              alignment: Alignment.centerLeft,
+
           height: 45.0,
           width: MediaQuery.of(context).size.width / 3,
           decoration: BoxDecoration(
@@ -287,7 +288,11 @@ class _FavouritesState extends State<Favourites> {
           ),
         ),
         new Spacer(),
-        IconButton(icon: Icon(Icons.add_shopping_cart), onPressed: (){}),
+        IconButton(icon: Icon(Icons.add_shopping_cart), onPressed: (){
+          // Navigator.push(context, new MaterialPageRoute(builder: (context) => Cart()));
+          Navigator.pushReplacement(context, new MaterialPageRoute(builder: (context) => Cart()));
+          
+        }),
         GestureDetector(
           onTap: () {
             
