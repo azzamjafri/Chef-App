@@ -152,7 +152,7 @@ class _FavouritesState extends State<Favourites> {
                                     topRight: Radius.circular(35.0)),
                               ),
                               Padding(
-                                padding: const EdgeInsets.all(8.0),
+                                padding: const EdgeInsets.all(1.0),
                                 child: Align(
                                   child: GestureDetector(
                                     onTap: () {
@@ -169,8 +169,8 @@ class _FavouritesState extends State<Favourites> {
                                     },
                                     child: Image.asset(
                                       'assets/redHeart.png',
-                                      color: redColor
-                                          
+                                      color: redColor,
+                                      scale: 7.5,
                                     ),
                                   ),
                                   alignment: Alignment.topRight,
@@ -302,9 +302,11 @@ class _FavouritesState extends State<Favourites> {
             });
           },
           child: Container(
-              child: Image.asset(
+            height: 45.0,
+            width: 50.0,
+            child: Image.asset(
             'assets/redHeart.png',
-            
+            scale: 15.0,
             color: redColor,
             fit: BoxFit.fill,
           )),

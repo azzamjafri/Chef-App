@@ -69,7 +69,7 @@ class _RegisterState extends State<Register> {
                     // User Name field
 
                     Container(
-                      height: 55.0,
+                      height: 59.0,
                       width: MediaQuery.of(context).size.width / 1.35,
                       child: new TextFormField(
                         textAlign: TextAlign.center,
@@ -98,7 +98,7 @@ class _RegisterState extends State<Register> {
                     // Email Button
 
                     Container(
-                      height: 55.0,
+                      height: 59.0,
                       width: MediaQuery.of(context).size.width / 1.35,
                       child: new TextFormField(
                         textAlign: TextAlign.center,
@@ -132,7 +132,7 @@ class _RegisterState extends State<Register> {
                     // Password Button
 
                     Container(
-                      height: 50.0,
+                      height: 59.0,
                       width: MediaQuery.of(context).size.width / 1.35,
                       child: new TextFormField(
 
@@ -162,7 +162,7 @@ class _RegisterState extends State<Register> {
                     // Confirm Password Button
 
                     Container(
-                      height: 50.0,
+                      height: 59.0,
                       width: MediaQuery.of(context).size.width / 1.35,
                       child: new TextFormField(
                         textAlign: TextAlign.center,

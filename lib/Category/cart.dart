@@ -101,7 +101,7 @@ class _CartState extends State<Cart> {
             );
           default:
             final int count = snapshot.data.documents.length;
-            if(count == 0) return Center(child: Text('No Items In Cart', style: TextStyle(fontSize: 22.0, fontStyle: FontStyle.italic)));
+            if(count == 0) return Center(child: Text('No  Items  In  Cart  Yet !', style: TextStyle(fontSize: 19.0, fontStyle: FontStyle.italic, fontWeight: FontWeight.bold, letterSpacing: 2.0)));
             return GridView.builder(
               physics: NeverScrollableScrollPhysics(),
               shrinkWrap: true,

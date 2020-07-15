@@ -164,12 +164,15 @@ class _CategoryState extends State<Category> {
                                       favouriteName.add(document['name']);
                                       });
                                     },
-                                    child: Image.asset(
-                                      favouriteName.contains(document['name']) ?
-                                      'assets/redHeart.png' :
-                                      'assets/heart.png',
+                                    child:  favouriteName.contains(document['name']) ?
+                                    Image.asset(
+                                      'assets/redHeart.png',
                                       color: redColor,
-                                    ),
+                                      scale: 7.5,
+                                      
+                                    )
+                                    :
+                                    Image.asset('assets/heart.png', color: redColor,),
                                   ),
                                   alignment: Alignment.topRight,
                                 ),
