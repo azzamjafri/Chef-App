@@ -108,6 +108,7 @@ class _ProductDetailsState extends State<ProductDetails> {
           Padding(
             padding: EdgeInsets.all(8.0),
           ),
+
           // INGREDIENTS
           new Row(
             children: <Widget>[
@@ -134,6 +135,7 @@ class _ProductDetailsState extends State<ProductDetails> {
 
           Row(
             children: <Widget>[
+
               // redText('Garlic Confit'),
               redText(data['preparationstep' + count.toString() + '_title']),
             ],
@@ -142,13 +144,7 @@ class _ProductDetailsState extends State<ProductDetails> {
           Table(
             defaultVerticalAlignment: TableCellVerticalAlignment.middle,
             children: [
-              for (int i = 0;
-                  i <
-                      data['preparationstep' +
-                              count.toString() +
-                              '_ingredient_names']
-                          .length;
-                  i++)
+              for (int i = 0;i < data['preparationstep' + count.toString() + '_ingredient_names'].length; i++)
                 TableRow(children: [
                   Padding(
                     padding: EdgeInsets.only(top: 1.5),
@@ -207,7 +203,9 @@ class _ProductDetailsState extends State<ProductDetails> {
               ),
             ),
           ),
+
           // HEADING
+
         ],
       ),
     );
@@ -294,14 +292,8 @@ class _ProductDetailsState extends State<ProductDetails> {
             padding: EdgeInsets.only(top: 4.0),
             child: Table(
               defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-              children: [
-                for (int j = 0;
-                    j <
-                        data['preparationstep' +
-                                i.toString() +
-                                '_ingredient_names']
-                            .length;
-                    j++)
+              children: [ 
+                for (int j = 0; j < data['preparationstep' + i.toString() + '_ingredient_names'].length;  j++)
                   TableRow(children: [
                     Padding(
                       padding: EdgeInsets.only(top: 1.5),
@@ -365,6 +357,13 @@ class _ProductDetailsState extends State<ProductDetails> {
           ),
         ),
         Padding(padding: EdgeInsets.only(left: MediaQuery.of(context).size.width / 1.8)),
+        // new Spacer(),
+        IconButton(icon: Icon(Icons.add_shopping_cart), onPressed: (){
+          Firestore.instance.collection('users').document(user.uid).collection('cart').document().setData({
+            'name': data['name'],
+            'image': data['images'][0],
+          });
+        }),
         GestureDetector(
           onTap: () {
             Firestore.instance

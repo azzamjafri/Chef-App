@@ -199,7 +199,7 @@ class _RegisterState extends State<Register> {
                           dynamic result = await _auth.registerWithEmailAndPassword(email, password).then((value) async {
 
                             var user = await FirebaseAuth.instance.currentUser();
-                            print(user.uid + '&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&\n\n');
+                            // print(user.uid + '&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&\n\n');
                             DocumentReference docRef = Firestore.instance.collection('users').document(user.uid);
                             docRef.setData({
                               'name' : userName,

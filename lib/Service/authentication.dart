@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:recipe_app/Category/categories.dart';
 import 'package:recipe_app/HomePage/login.dart';
 import 'package:recipe_app/HomePage/registration.dart';
-import 'package:recipe_app/Model/user_model.dart';
+
 
 
 class AuthService {
@@ -11,10 +11,7 @@ class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
 
-  // User
-  User _userFromFirebase(FirebaseUser user) {
-    return user == null ? User(uid: user.uid) : null;
-  }
+  
 
 
   // Auth Change
@@ -70,6 +67,12 @@ class AuthService {
       print(e.toString() + "...................");
       return null;
     }
+  }
+
+
+  // Reset password and email
+  Future resetPassword(String email) async {
+    await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
   }
 
   handleAuth() {

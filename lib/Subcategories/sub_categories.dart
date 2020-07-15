@@ -10,7 +10,6 @@ class SubCategory extends StatefulWidget {
   String reference;
   SubCategory(String document) {
     reference = document;
-
   }
 
   @override
@@ -18,7 +17,6 @@ class SubCategory extends StatefulWidget {
 }
 
 class _SubCategoryState extends State<SubCategory> {
-  
   _SubCategoryState(String docx) {
     docId = docx;
     // print(docId + ' **********************************');
@@ -38,7 +36,6 @@ class _SubCategoryState extends State<SubCategory> {
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
-
                 //BackButton
 
                 Align(
@@ -71,21 +68,26 @@ class _SubCategoryState extends State<SubCategory> {
   }
 
   _getList() {
-    
-    if(docId == null) return Center(child: Text('No Data here :)'));
+    if (docId == null) return Center(child: Text('No Data here :)'));
     return StreamBuilder<QuerySnapshot>(
-      
       stream: Firestore.instance
           .collection('categories')
           .document('$docId')
           .collection('dishes')
           .snapshots(),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-        
-        if (!snapshot.hasData) return Column(children: [
-          Center(child: Text('Fetching Data .....', style: TextStyle(fontSize: 17.0, fontStyle: FontStyle.italic)), heightFactor: 15.0,),
-          Center(child: CircularProgressIndicator()),
-        ],);
+        if (!snapshot.hasData)
+          return Column(
+            children: [
+              Center(
+                child: Text('Fetching Data .....',
+                    style:
+                        TextStyle(fontSize: 17.0, fontStyle: FontStyle.italic)),
+                heightFactor: 15.0,
+              ),
+              Center(child: CircularProgressIndicator()),
+            ],
+          );
 
         final int count = snapshot.data.documents.length;
         if (count == 0)
@@ -115,99 +117,115 @@ class _SubCategoryState extends State<SubCategory> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       ClipRRect(
-                        
-                        child: Image.network(document['images'][0], fit: BoxFit.cover, width: 115, height: 130.0,),
+                        child: Image.network(
+                          document['images'][0],
+                          fit: BoxFit.cover,
+                          width: 115,
+                          height: 130.0,
+                        ),
                         borderRadius: BorderRadius.only(
                             topLeft: Radius.circular(30.0),
                             bottomLeft: Radius.circular(30.0)),
                       ),
                       SizedBox(width: 8.5),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: <Widget>[
-                          Padding(
-                            padding: EdgeInsets.only(top: 10.0),
-                          ),
-                          Text("${document['name']}",
-                            style: TextStyle(
-                                fontSize: 18.0, fontWeight: FontWeight.w800),
-                            textAlign: TextAlign.center,
-                            softWrap: true,
-                          ),
-                          Padding(padding: EdgeInsets.only(bottom: 10)),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: <Widget>[
-                              Text(
-                                "Ingredients",
+                      SafeArea(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: <Widget>[
+                            Padding(
+                              padding: EdgeInsets.only(top: 10.0),
+                            ),
+                            SafeArea(
+                              child: Text(
+                                "${document['name']}",
                                 style: TextStyle(
-                                    color: redColor, fontSize: 15.0),
+                                    fontSize: 18.0,
+                                    fontWeight: FontWeight.w800),
+                                textAlign: TextAlign.center,
+                                softWrap: true,
                               ),
-                              SizedBox(
-                                width: (MediaQuery.of(context).size.width / 2 - 120),
-                              ),
-                              Text(
-                                "Qty",
-                                style: TextStyle(
-                                  color: redColor,
-                                  fontSize: 15.0,
-                                ),
-                              ),
-                            ],
-                          ),
-                          Padding(padding: EdgeInsets.only(bottom: 10)),
-                          Row(
-                            children: <Widget>[
-                              Text(
-                                "${document['ingredient_names'][0]}",
-                                // ingredients[index],
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 14.0,
-                                ),
-                              ),
-                              SizedBox(
-                                width: (MediaQuery.of(context).size.width / 3 - 100),
-                              ),
-                              Text(
-                                "${document['ingredients_qty'][0]}",
-                                // quantity[index],
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 14.0,
-                                ),
-                              ),
-                            ],
-                          ),
-                          Padding(padding: EdgeInsets.only(bottom: 12.0)),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              Padding(
-                                  padding:
-                                      EdgeInsets.only(left: 90.0, top: 15.0)),
-                              GestureDetector(
-                                child: Text(
-                                  "View More",
+                            ),
+                            Padding(padding: EdgeInsets.only(bottom: 10)),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: <Widget>[
+                                Text(
+                                  "Ingredients",
                                   style: TextStyle(
-                                      color: redColor,
-                                      fontSize: 14.0,
-                                      fontWeight: FontWeight.bold),
-                                  textAlign: TextAlign.end,
+                                      color: redColor, fontSize: 15.0),
                                 ),
-                                onTap: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(builder: (context) => ProductDetails(document)));
-                                },
-                              ),
-                              Padding(
-                                padding: EdgeInsets.only(top: 5.0),
-                              )
-                            ],
-                          ),
-                        ],
+                                SizedBox(
+                                  width:
+                                      (MediaQuery.of(context).size.width / 2 -
+                                          120),
+                                ),
+                                Text(
+                                  "Qty",
+                                  style: TextStyle(
+                                    color: redColor,
+                                    fontSize: 15.0,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Padding(padding: EdgeInsets.only(bottom: 10)),
+                            Row(
+                              children: <Widget>[
+                                Text(
+                                  "${document['ingredient_names'][0]}",
+                                  // ingredients[index],
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 14.0,
+                                  ),
+                                ),
+                                SizedBox(
+                                  width:
+                                      (MediaQuery.of(context).size.width / 3 -
+                                          100),
+                                ),
+                                Text(
+                                  "${document['ingredients_qty'][0]}",
+                                  // quantity[index],
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 14.0,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Padding(padding: EdgeInsets.only(bottom: 12.0)),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Padding(
+                                    padding:
+                                        EdgeInsets.only(left: 90.0, top: 15.0)),
+                                GestureDetector(
+                                  child: Text(
+                                    "View More",
+                                    style: TextStyle(
+                                        color: redColor,
+                                        fontSize: 14.0,
+                                        fontWeight: FontWeight.bold),
+                                    textAlign: TextAlign.end,
+                                  ),
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                ProductDetails(document)));
+                                  },
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.only(top: 5.0),
+                                )
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),

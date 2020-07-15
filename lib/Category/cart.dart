@@ -3,36 +3,28 @@ import 'dart:collection';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:recipe_app/Category/categories.dart';
 
-import 'package:recipe_app/HomePage/login.dart';
+
 import 'package:recipe_app/Service/authentication.dart';
 import 'package:recipe_app/Subcategories/sub_categories.dart';
 
 import '../colors.dart';
 
-// filteredNames, searchText, name
 
-class Favourites extends StatefulWidget {
 
-  // List<String> favouriteName = new List<String>();
-
+class Cart extends StatefulWidget {
   
-  var favouriteName;
-  Favourites(List<String> l) {
-    favouriteName = l;
-  }
+  
   @override
-  _FavouritesState createState() => _FavouritesState(favouriteName);
+  _CartState createState() => _CartState();
 }
 
-class _FavouritesState extends State<Favourites> {
-  // List<String> favouriteName = new List<String>();
+class _CartState extends State<Cart> {
+  
   List<String> favouriteName;
-  _FavouritesState(List<String> l) {
-    favouriteName = l;
-  }
 
-  var user;
+  
 
 
   var _filter = new TextEditingController();
@@ -40,19 +32,17 @@ class _FavouritesState extends State<Favourites> {
 
   final AuthService _auth = new AuthService();
 
-  var favourites;
-  bool isEmpty = false;
+  var Cart;
+  // bool isEmpty = true;
   @override
   void initState() {
     // if(favouriteName.isEmpty) isEmpty = true;
   //  print(isEmpty.toString() + ' ))))))))))))))))))))))))');
-    getUser();
+    
     super.initState();
   }
 
-  getUser() async {
-    user = await FirebaseAuth.instance.currentUser();
-  }
+  
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
@@ -91,12 +81,12 @@ class _FavouritesState extends State<Favourites> {
 
   Widget _buildList() {
     
-    // if(favouriteName.isEmpty) return Center(child: Text('No  Favourites  Yet', style: TextStyle(fontSize: 18.0, fontStyle: FontStyle.italic, fontWeight: FontWeight.bold, letterSpacing: 2.0)));
+    // if(favouriteName.isEmpty) return Center(child: Text('No  Items  In  Cart  Yet', style: TextStyle(fontSize: 18.0, fontStyle: FontStyle.italic, fontWeight: FontWeight.bold, letterSpacing: 2.0)));
     
     
     
      
-    var streamData = Firestore.instance.collection('categories').where('name', whereIn: favouriteName).snapshots();
+    var streamData = Firestore.instance.collection('users').document(user.uid).collection('cart').snapshots();
     // var streamData = Firestore.instance.collection('categories').where('name', whereIn: favourites).snapshots();
     return StreamBuilder<QuerySnapshot>(
       stream: streamData,
@@ -111,7 +101,7 @@ class _FavouritesState extends State<Favourites> {
             );
           default:
             final int count = snapshot.data.documents.length;
-            if(count == 0) return Center(child: Text('No  Favourites  Yet', style: TextStyle(fontSize: 18.0, fontStyle: FontStyle.italic, fontWeight: FontWeight.bold, letterSpacing: 2.0)));
+            // if(count == 0) print('000000000000000');
             return GridView.builder(
               physics: NeverScrollableScrollPhysics(),
               shrinkWrap: true,
@@ -141,7 +131,7 @@ class _FavouritesState extends State<Favourites> {
                           Stack(
                             children: <Widget>[
                               ClipRRect(
-                                // child: Image.asset('assets/category_images/bagel.jpg',fit: BoxFit.fill,),
+                                
                                 child: Container(
                                   height: 110.0,
                                   width: MediaQuery.of(context).size.width / 2.2,
@@ -155,17 +145,7 @@ class _FavouritesState extends State<Favourites> {
                                 child: Align(
                                   child: GestureDetector(
                                     onTap: () {
-                                      
-                                      setState(() {
-                                        Firestore.instance.collection('users').document(user.uid).updateData({
-                                        'favourites': FieldValue.arrayRemove([document['name']]),
-                                      });
-                                      List<String> temp;
-                                      
-                                      favouriteName.remove(document['name']);
-                                      });
-                                      
-                                    },
+                                      },
                                     child: Image.asset(
                                       'assets/redHeart.png',
                                       color: redColor
@@ -244,7 +224,7 @@ class _FavouritesState extends State<Favourites> {
           ),
           child: Center(
               child: new Text(
-            'Favourites',
+            'Cart',
             style: TextStyle(color: Colors.white),
           )),
         ),
@@ -287,7 +267,7 @@ class _FavouritesState extends State<Favourites> {
           ),
         ),
         new Spacer(),
-        IconButton(icon: Icon(Icons.add_shopping_cart), onPressed: (){}),
+        // IconButton(icon: Icon(Icons.add_shopping_cart), onPressed: (){}),
         GestureDetector(
           onTap: () {
             
@@ -298,7 +278,7 @@ class _FavouritesState extends State<Favourites> {
           },
           child: Container(
               child: Image.asset(
-            'assets/redHeart.png',
+            'assets/heart.png',
             
             color: redColor,
             fit: BoxFit.fill,

@@ -3,6 +3,7 @@ import 'dart:collection';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:recipe_app/Category/cart.dart';
 import 'package:recipe_app/Category/favourites_list.dart';
 
 import 'package:recipe_app/HomePage/login.dart';
@@ -300,7 +301,10 @@ class _CategoryState extends State<Category> {
           ),
         ),
         new Spacer(),
-        IconButton(icon: Icon(Icons.add_shopping_cart), onPressed: (){}),
+        IconButton(icon: Icon(Icons.add_shopping_cart), onPressed: (){
+          
+          Navigator.push(context, new MaterialPageRoute(builder: (context) => Cart()));
+        }),
         GestureDetector(
           onTap: () async {
 

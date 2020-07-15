@@ -70,7 +70,7 @@ class _LoginState extends State<Login> {
                     // Email Button
 
                     Container(
-                      height: 65.0,
+                      height: 70.0,
                       width: MediaQuery.of(context).size.width / 1.35,
                       child: new TextFormField(
                         textAlign: TextAlign.center,
