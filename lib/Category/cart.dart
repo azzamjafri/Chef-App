@@ -61,10 +61,8 @@ class _CartState extends State<Cart> {
             Padding(
               padding: EdgeInsets.all(10.0),
             ),
-            favouriteTile(),
-            Padding(
-              padding: EdgeInsets.all(10.0),
-            ),
+            // favouriteTile(),
+            // Padding(padding: EdgeInsets.all(10.0),),
             ListView(
               physics: NeverScrollableScrollPhysics(),
               shrinkWrap: true,
