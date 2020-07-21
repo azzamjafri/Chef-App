@@ -24,7 +24,7 @@ class Category extends StatefulWidget {
 class _CategoryState extends State<Category> {
   var _filter = new TextEditingController();
   String _searchText = "";
-
+  Function f;
   final AuthService _auth = new AuthService();
 
   var favouriteName;
@@ -92,20 +92,21 @@ class _CategoryState extends State<Category> {
    
 
     // DO NOT TOUCH  request.time < timestamp.date(2020, 7, 8);
-
-    var streamData;
-    if (_searchText == "")
-      streamData = Firestore.instance.collection('categories').snapshots();
-    else {
-      streamData = Firestore.instance
-          .collection('categories')
-          .orderBy('name')
-          .startAt([_searchText])
-          .snapshots();
-    }
+    
+    // var streamData;
+    // if (_searchText == "")
+    //   streamData = Firestore.instance.collection('categories').snapshots();
+    // else {
+    //   streamData = Firestore.instance
+    //       .collection('categories')
+    //       .orderBy('name')
+    //       .startAt([_searchText])
+    //       .snapshots();
+    // }
 
     return StreamBuilder<QuerySnapshot>(
-      stream: streamData,
+      stream: (_searchText == "") ? Firestore.instance.collection('categories').snapshots()
+          : Firestore.instance.collection('categories').orderBy('name').startAt([_searchText]).snapshots(),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
         if (snapshot.hasError) return new Text('Error : ${snapshot.error}');
         switch (snapshot.connectionState) {
@@ -216,14 +217,16 @@ class _CategoryState extends State<Category> {
         onChanged: (val) {
           _filter.addListener(() {
             if (_filter.text.isEmpty) {
-              setState(() {
-                _searchText = "";
-              });
+              // setState(() {
+              //   _searchText = "";
+              // });
+              _searchText = "";
             } else {
               
-              setState(() {
-                _searchText = capitalize(_filter.text);
-              });
+              // setState(() {
+              //   _searchText = capitalize(_filter.text);
+              // });
+              _searchText = capitalize(_filter.text);
             }
           });
         },
@@ -291,10 +294,7 @@ class _CategoryState extends State<Category> {
               ),
               onPressed: () {
                 _auth.signOut();
-                Navigator.pushAndRemoveUntil(
-                    context,
-                    new MaterialPageRoute(builder: (context) => Login()),
-                    (route) => false);
+                Navigator.pushAndRemoveUntil(context, new MaterialPageRoute(builder: (context) => Login()), (route) => false);
               },
             )),
           ),
@@ -308,7 +308,7 @@ class _CategoryState extends State<Category> {
           ),
         ),
         new Spacer(),
-        IconButton(icon: Icon(Icons.add_shopping_cart), onPressed: (){
+        IconButton(icon: Icon(Icons.add_shopping_cart), onPressed: () async {
           
           Navigator.push(context, new MaterialPageRoute(builder: (context) => Cart()));
         }),
@@ -335,8 +335,11 @@ class _CategoryState extends State<Category> {
     Firestore.instance.collection('users').document(user.uid).get().then((value) {
       favouriteName = value.data['favourites'];
       
-    }).then((value) {
-      Navigator.push(context, MaterialPageRoute(builder: (context) => new Favourites(List.of(HashSet.from(favouriteName)))));
+    }).then((value) async {
+      // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Favourites(List.of(HashSet.from(favouriteName)))));
+      
+      f = await Navigator.push(context, MaterialPageRoute(builder: (context) => new Favourites(List.of(HashSet.from(favouriteName)))));
+      setState(() => f());
     });
     
   }
